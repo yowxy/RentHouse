@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use Filament\Forms\Components\FileUpload;
 
 class ListingResource extends Resource
 {
@@ -54,19 +55,20 @@ class ListingResource extends Resource
                     ->numeric()
                     ->default(0),
                 Forms\Components\Checkbox::make('full_support_available')
-                    ->required()
                     ->default(0),
                 Forms\Components\Checkbox::make('gym_area_available')
-                    ->required()
                     ->default(0),
                 Forms\Components\Checkbox::make('mini_cafe_available')
-                    ->required()
                     ->default(0),
                 Forms\Components\Checkbox::make('cinema_available')
-                    ->required()
                     ->default(0),
-                Forms\Components\FileUpload::make('attachments')
-                    ->columnSpanFull(),
+                FileUpload::make(name: 'attachments')
+                    ->directory('listings')
+                    ->openable()
+                    ->multiple()
+                    ->reorderable()
+                    ->appendFiles()
+                    ->image(),
             ]);
     }
 
@@ -83,45 +85,22 @@ class ListingResource extends Resource
                 Tables\Columns\TextColumn::make('sqft')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('wifi_speed')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('max_person')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('price_per_day')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('full_support_available')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('gym_area_available')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('mini_cafe_available')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('cinema_available')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->money('USD'),
+                 Tables\Columns\ImageColumn::make('attachments')
+                    ->rounded(),
+
+
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
