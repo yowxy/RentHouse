@@ -26,7 +26,7 @@ class TransactionResource extends Resource
         return false;
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-up';
 
     public static function form(Form $form): Form
     {
@@ -110,7 +110,7 @@ class TransactionResource extends Resource
                 ActionsAction::make('approved')
                     ->button()
                     ->color('success')
-                    ->action(function(Transaction $transaction){ 
+                    ->action(function(Transaction $transaction){
                         Transaction::find($transaction->id)->update([
                             'status' => 'approved'
                         ]);
